@@ -1,4 +1,10 @@
 
+//! Memory plugin for StateMachine
+//!
+//! Memory can evaluate these commands:
+//! * `READ` -- get single param with name of variable and push to stack value of it
+//! * `WRITE` -- get single param with name of variable and read value from stack. set readed value
+//! in variable
 
 use crate::Command;
 use crate::Processor;

@@ -1,4 +1,12 @@
 
+//! Arithmetic plugin for StateMachine
+//!
+//! Arithmetic can evaluate these commands:
+//! * `SUM` -- read two values from stack and set addition of them
+//! * `SUB` -- read two values from stack and set subtraction of them
+//! * `DIV` -- read two values from stack and set division of them
+//! * `MULT` -- read two values from stack and set multiplication of them
+
 use crate::Command;
 use crate::Processor;
 use crate::Plugin;
@@ -10,7 +18,7 @@ pub struct Arithmetic;
 impl Plugin for Arithmetic {
     fn operations(&self) -> Vec<String> {
         return vec![
-            "ADD".to_owned(),
+            "SUM".to_owned(),
             "MULT".to_owned(),
             "SUB".to_owned(),
             "DIV".to_owned(),
@@ -18,7 +26,7 @@ impl Plugin for Arithmetic {
     }
     fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<(), String> {
         match cmd.name.as_str() {
-            "ADD" => {
+            "SUM" => {
                 let values = proc.take(2)?;
                 let result = values.into_iter()
                     .map(|a| Ok(a))
@@ -26,7 +34,7 @@ impl Plugin for Arithmetic {
                         if let Value::Number(a) = a? {
                             Ok(a)
                         } else {
-                            Err("ADD must get only numbers".to_owned())
+                            Err("SUM must get only numbers".to_owned())
                         }
                     })
                     .reduce(|a, b| Ok(a? + b?))
