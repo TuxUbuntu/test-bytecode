@@ -54,7 +54,7 @@ impl FromStr for Value {
             Some('f') => Ok(Value::Boolean(false)),
             Some('"') if chars.last().unwrap() == '"' =>
                 Ok(Value::String(s[1..len-1].to_string())),
-            _ => unimplemented!(),
+            _ => Err(format!("Undefined param: {}", s)),
         }
     }
 }
