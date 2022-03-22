@@ -10,6 +10,7 @@ use crate::Command;
 use crate::Processor;
 use crate::Plugin;
 use crate::Value;
+use crate::Result;
 use std::collections::HashMap;
 
 #[derive(Default)]
@@ -24,13 +25,13 @@ impl Plugin for Memory {
             "WRITE".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<(), String> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
         match cmd.name.as_str() {
             "READ" => {
                 let name = if let Some(Value::String(name)) = cmd.params.get(0).cloned() {
                     name
                 } else {
-                    return Err("READ must have string param".to_owned());
+                    return Err("READ must have string param".into());
                 };
                 let value = self.memory.get(&name).cloned()
                     .ok_or_else(|| format!("READ undefined variable {}", name))?;
@@ -40,7 +41,7 @@ impl Plugin for Memory {
                 let name = if let Some(Value::String(name)) = cmd.params.get(0).cloned() {
                     name
                 } else {
-                    return Err("WRITE must have string param".to_owned());
+                    return Err("WRITE must have string param".into());
                 };
                 let value = proc.pop()?;
                 self.memory.insert(name, value);

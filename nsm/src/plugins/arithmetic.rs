@@ -11,6 +11,7 @@ use crate::Command;
 use crate::Processor;
 use crate::Plugin;
 use crate::Value;
+use crate::Result;
 
 #[derive(Default)]
 pub struct Arithmetic;
@@ -24,7 +25,7 @@ impl Plugin for Arithmetic {
             "DIV".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<(), String> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
         match cmd.name.as_str() {
             "SUM" => {
                 let values = proc.take(2)?;

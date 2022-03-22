@@ -11,5 +11,5 @@ env_logger = "0.9"
 actix-web = "4.0"
 actix-files = "0.6"
 futures = "0.3"
-nsm = { path = "../nsm" }
+nsm = { path = "../nsm", features = [ "actix-web" ] }
 

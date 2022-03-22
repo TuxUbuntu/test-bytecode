@@ -2,6 +2,7 @@
 use crate::Command;
 use crate::Processor;
 use crate::Plugin;
+use crate::Result;
 
 #[derive(Default)]
 pub struct Stack;
@@ -12,7 +13,7 @@ impl Plugin for Stack {
             "SET".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<(), String> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
         match cmd.name.as_str() {
             "SET" => {
                 let value = cmd.params.get(0).cloned()

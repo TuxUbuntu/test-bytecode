@@ -797,6 +797,9 @@ dependencies = [
 [[package]]
 name = "nsm"
 version = "0.1.0"
+dependencies = [
+ "actix-web",
+]
 
 [[package]]
 name = "ntapi"

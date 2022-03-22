@@ -34,6 +34,7 @@
 
 mod tests;
 mod tape;
+mod error;
 
 /// Plugins for state machine
 pub mod plugins;
@@ -42,13 +43,16 @@ mod processor;
 use std::collections::HashMap;
 pub use crate::processor::Processor;
 pub use crate::tape::Tape;
+pub use crate::error::Error;
+
+type Result<T, E = Error> = std::result::Result<T, E>;
 
 /// Trait for make additional functionality for state machine
 pub trait Plugin {
     /// Declare list of supported operations
     fn operations(&self) -> Vec<String>;
     /// Execute single command
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<(), String>;
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()>;
 }
 
 /// Atomic command with params
@@ -73,7 +77,7 @@ pub struct StateMachine {
 
 impl StateMachine {
     /// Register plugin for current instance
-    pub fn register<P>(&mut self, plugin: P) -> Result<(), String>
+    pub fn register<P>(&mut self, plugin: P) -> Result<()>
     where
         P: Plugin + 'static,
     {
@@ -85,18 +89,18 @@ impl StateMachine {
         Ok(())
     }
     /// Read tape and execute it
-    pub fn read(&mut self, tape: &Tape) -> Result<Value, String> {
+    pub fn read(&mut self, tape: &Tape) -> Result<Value> {
         for cmd in tape.inner.iter() {
             self.step(cmd)?;
         }
         match self.proc.len() {
             0 => Ok(Value::Null),
             1 => Ok(self.proc.pop().unwrap()),
-            n @ _ => Err(format!("Stack tail is too long: {}", n)),
+            n @ _ => Err(format!("Stack tail is too long: {}", n).into()),
         }
     }
     /// Do single step
-    fn step(&mut self, cmd: &Command) -> Result<(), String> {
+    fn step(&mut self, cmd: &Command) -> Result<()> {
         let id = self.index.get(&cmd.name).cloned()
             .ok_or_else(|| format!("Unknown command: {}", cmd.name))?;
         let plugin = &mut self.plugins[id];

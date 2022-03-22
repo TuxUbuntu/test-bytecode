@@ -11,6 +11,7 @@ use env_logger::Env;
 use actix_web::middleware::Logger;
 use actix_web::{post, web, App, HttpServer, HttpResponse, Result};
 
+
 #[post("/eval")]
 async fn eval(mut payload: web::Payload) -> Result<HttpResponse> {
     let mut body = web::BytesMut::new();
@@ -20,10 +21,10 @@ async fn eval(mut payload: web::Payload) -> Result<HttpResponse> {
     let text = String::from_utf8(body.freeze().to_vec()).unwrap();
     let tape = text.parse().expect("Parse tape error");
     let mut main = StateMachine::default();
-    main.register(Memory::default()).unwrap();
-    main.register(Stack::default()).unwrap();
-    main.register(Arithmetic::default()).unwrap();
-    let res = main.read(&tape).unwrap();
+    main.register(Memory::default())?;
+    main.register(Stack::default())?;
+    main.register(Arithmetic::default())?;
+    let res = main.read(&tape)?;
     let res = format!("{:?}", res);
     Ok(HttpResponse::Ok().body(res))
 }
