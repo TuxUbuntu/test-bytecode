@@ -1,4 +1,9 @@
 
+//! Stack plugin for StateMachine
+//!
+//! Stack can evaluate these commands:
+//! * `SET` -- get single param with value and set this value on stack
+
 use crate::Command;
 use crate::Processor;
 use crate::Plugin;
@@ -13,7 +18,7 @@ impl Plugin for Stack {
             "SET".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command, position: usize) -> Result<usize> {
         match cmd.name.as_str() {
             "SET" => {
                 let value = cmd.params.get(0).cloned()
@@ -22,7 +27,7 @@ impl Plugin for Stack {
             }
             _ => unreachable!(),
         }
-        Ok(())
+        Ok(position + 1)
     }
 }
 

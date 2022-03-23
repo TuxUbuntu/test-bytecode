@@ -25,7 +25,7 @@ impl Plugin for Memory {
             "WRITE".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command, position: usize) -> Result<usize> {
         match cmd.name.as_str() {
             "READ" => {
                 let name = if let Some(Value::String(name)) = cmd.params.get(0).cloned() {
@@ -48,7 +48,7 @@ impl Plugin for Memory {
             }
             _ => unreachable!(),
         }
-        Ok(())
+        Ok(position + 1)
     }
 }
 

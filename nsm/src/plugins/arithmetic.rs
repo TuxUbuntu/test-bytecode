@@ -25,7 +25,7 @@ impl Plugin for Arithmetic {
             "DIV".to_owned(),
         ];
     }
-    fn execute(&mut self, proc: &mut Processor, cmd: &Command) -> Result<()> {
+    fn execute(&mut self, proc: &mut Processor, cmd: &Command, position: usize) -> Result<usize> {
         match cmd.name.as_str() {
             "SUM" => {
                 let values = proc.take(2)?;
@@ -53,7 +53,7 @@ impl Plugin for Arithmetic {
                             Err("SUB must get only numbers".to_owned())
                         }
                     })
-                    .reduce(|a, b| Ok(a? - b?))
+                    .reduce(|a, b| Ok(b? - a?))
                     .unwrap()?;
                 proc.push(Value::Number(result));
             }
@@ -89,7 +89,7 @@ impl Plugin for Arithmetic {
             }
             _ => unreachable!(),
         }
-        Ok(())
+        Ok(position + 1)
     }
 }
 
