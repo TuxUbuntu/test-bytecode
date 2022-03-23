@@ -33,10 +33,13 @@ async fn eval(mut payload: web::Payload) -> Result<HttpResponse> {
 async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(Env::default().default_filter_or("info"));
     HttpServer::new(|| {
+        let files = Files::new("/", "web-service/static")
+            .prefer_utf8(true)
+            .index_file("index.html");
         App::new()
             .wrap(Logger::default())
             .service(eval)
-            .service(Files::new("/", "web-service/static").prefer_utf8(true))
+            .service(files)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
